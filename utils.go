@@ -221,58 +221,9 @@ func formatAccount(account *mcgo.MCaccount) string {
 }
 
 func announceSnipe(username, auth string, account *mcgo.MCaccount) error {
-	req, err := http.NewRequest("POST", fmt.Sprintf("https://api.mcsniperpy.com/announce?username=%v&prename=%v", username, account.Type == mcgo.MsPr), nil)
-
-	if err != nil {
-		return err
-	}
-
-	req.Header.Add("Authorization", auth)
-
-	res, err := http.DefaultClient.Do(req)
-
-	if err != nil {
-		return err
-	}
-
-	defer res.Body.Close()
-
-	switch res.StatusCode {
-	case 401:
-		{
-			return errors.New("invalid auth code")
-		}
-	case 429:
-		{
-			return errors.New("too many requests (ask staff to manually announce)")
-		}
-	default:
-		return errors.New(fmt.Sprintf("Got: %v Couldnt announce your snipe, please contact staff to manually post it.", res.StatusCode))
-	}
 }
 
 func customServerAnnounce(name string) error {
-	config, err := getConfig()
-	if err != nil {
-		panic(err)
-	}
-	discord.WebhookURL = config.Announce.WebhookURL
-
-	discord.Post(discord.PostOptions{
-		Embeds: []discord.Embed{
-			{
-				Footer: &discord.Footer{
-					Text:    "MCsniperGO",
-					IconURL: "https://cdn.discordapp.com/icons/734794891258757160/a_011d19e6e17a5eb46d108fd45b28dc9d.webp?size=96",
-				},
-				Title:       "Successful Snipe",
-				URL:         "https://github.com/Kqzz/MCsniperGO",
-				Color:       3118847,
-				Description: fmt.Sprintf("Name: [`%v`](https://namemc.com/search?q=%v)", name, name),
-			},
-		},
-	})
-	return nil
 }
 
 func accID(acc *mcgo.MCaccount) string {
